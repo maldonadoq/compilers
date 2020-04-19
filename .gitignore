@@ -1,3 +1,12 @@
+# Flex
+*.yy.c
+
+# Bison/Yacc
+*.tab.h
+*.tab.c
+*.tab.hpp
+*.tab.cpp
+
 # Prerequisites
 *.d
 
