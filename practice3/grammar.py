@@ -37,7 +37,6 @@ class Grammar:
 				right.append(pr)
 
 				if(pr not in self.nonterminals):
-					if(pr not in self.terminals):
 						self.terminals.add(pr)
 
 		self.productions[_left].append(right)
