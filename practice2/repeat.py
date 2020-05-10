@@ -1,3 +1,4 @@
+import readline
 import re
 
 def repeated(line):

@@ -1,4 +1,4 @@
-
+import readline
 
 def checkBalance(expression):
     stack = []

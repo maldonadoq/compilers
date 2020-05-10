@@ -1,3 +1,4 @@
+import readline
 
 class Grammar:
 	productions = {}
@@ -42,7 +43,12 @@ class Grammar:
 		self.productions[_left].append(right)
 
 	def getProduction(self, _left):
-		return self.productions[_left]
+		if(_left in self.nonterminals):
+			return self.productions[_left]
+		else:
+			if(_left in self.terminals):
+				return 'It is terminal Token'
+			return 'Do not have Production'
 
 	def printGrammar(self):
 		print('Terminals     : {}'.format(self.terminals))
@@ -67,7 +73,13 @@ if __name__ == "__main__":
 	gramm.setGrammar("F := ( E ) | num | id")
 
 	gramm.printGrammar()
+	print('\n---------------------------------------------\n')
 
-	left = "E"
-	right = gramm.getProduction(left)
-	print('\n{:3}: {}'.format(left, right))
+	while(True):
+		left = input('query: ')
+
+		if(left == 'q'):
+			break    
+	
+		right = gramm.getProduction(left)
+		print('  {:3}: {}'.format(left, right))

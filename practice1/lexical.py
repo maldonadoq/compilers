@@ -1,5 +1,4 @@
-# Percy Maldonado Quispe
-
+import readline
 
 # Token Class [word, idx, type]
 class Token:
