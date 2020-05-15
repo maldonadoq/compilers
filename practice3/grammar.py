@@ -5,9 +5,6 @@ class Grammar:
 	terminals = set()
 	nonterminals = set()
 
-	def getProduction(self):
-		pass
-
 	def setGrammar(self, _text):
 		line = _text.split()
 		size = len(line)
