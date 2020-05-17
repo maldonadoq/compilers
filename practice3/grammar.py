@@ -4,6 +4,7 @@ class Grammar:
 	productions = {}
 	terminals = set()
 	nonterminals = set()
+	sat = dict()
 
 	def setGrammar(self, _text):
 		line = _text.split()
@@ -47,6 +48,13 @@ class Grammar:
 				return 'It is terminal Token'
 			return 'Do not have Production'
 
+	def fillInSat(self):
+		self.sat["E"] = {"(": ["T", "Ep"], "num": ["T", "Ep"], "id": ["T", "Ep"]}
+		self.sat["Ep"] = {"+": ["+", "T", "Ep"], "-": ["-", "T", "Ep"], ")": ["lambda"], "$": ["lambda"]}
+		self.sat["T"] = {"(": ["F", "Tp"], "num": ["F", "Tp"], "id": ["F", "Tp"]}
+		self.sat["Tp"] = {"+": ["lambda"], "-": ["lambda"], "*": ["*", "F", "Tp"], "/": ["/", "F", "Tp"], ")": ["lambda"], "$": ["lambda"]}
+		self.sat["F"] = {"(": ["(", "E", ")"], "num": ["num"], "id": ["id"]}
+
 	def printGrammar(self):
 		print('Terminals     : {}'.format(self.terminals))
 		print('Non Terminals : {}\n'.format(self.nonterminals))
@@ -57,6 +65,14 @@ class Grammar:
 			for right in self.productions[left]:
 				print(right, end=' ')
 			print()
+		
+		print()
+		for sp in self.sat:
+			print('{:3}'.format(sp), end=' ')
+			for tok in self.sat[sp]:
+				print('{}:{}'.format(tok, self.sat[sp][tok]), end='\t')
+			print()
+
 
 if __name__ == "__main__":
 	gramm = Grammar()
@@ -68,6 +84,8 @@ if __name__ == "__main__":
 	gramm.setGrammar("T := F Tp")
 	gramm.setGrammar("Tp := * F Tp | / F Tp | lambda")
 	gramm.setGrammar("F := ( E ) | num | id")
+
+	gramm.fillInSat()
 
 	gramm.printGrammar()
 	print('\n---------------------------------------------\n')
