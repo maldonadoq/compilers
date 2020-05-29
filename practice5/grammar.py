@@ -144,3 +144,10 @@ class Grammar:
 				toString(self.firsts[non]),
 				toString(self.follows[non])
 			))
+
+if __name__ == "__main__":
+	gramm = Grammar(filename='test.txt', init='E')
+	gramm.runFirsts()
+	gramm.runFollows()
+
+	gramm.print()

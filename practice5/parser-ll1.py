@@ -6,7 +6,7 @@ class ParserLL1:
 		self.grammar = grammar
 		self.table = dict()
 
-	def fillParsingTable(self):
+	def fillTable(self):
 		''' self.table = {}
 
 		for left in self.grammar.nonterminals:
@@ -59,12 +59,12 @@ class ParserLL1:
 				q.pop(0)
 				s.pop()
 			else:
-				tmp = s[-1]
-				s.pop()
+				tmp = s.pop()
 
-				for tok in self.table[tmp][q[0]][::-1]:
-					if(tok != 'lambda'):
-						s.append(tok)
+				if(tmp in self.table and q[0] in self.table[tmp]):
+					for tok in self.table[tmp][q[0]][::-1]:
+						if(tok != 'lambda'):
+							s.append(tok)
 
 		if(len(q) == 0 and len(s) == 0):
 			return 'Sentence Accepted!'
@@ -73,14 +73,12 @@ class ParserLL1:
 
 
 if __name__ == '__main__':
-	gramm = Grammar(filename='test.txt', init='E')
+	gramm = Grammar(filename='grammar.txt', init='E')
 	gramm.runFirsts()
 	gramm.runFollows()
 
-	gramm.print()
-
 	parser = ParserLL1(gramm)
-	parser.fillParsingTable()
+	parser.fillTable()
 
 	while(True):
 		line = input('sentence: ')
