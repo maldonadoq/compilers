@@ -6,6 +6,7 @@ def toString(ls):
 	return tmp
 
 first_tmp	= []
+nonterm = []
 
 class Production:
 	def __init__(self, left, right):
@@ -17,8 +18,8 @@ class Production:
 
 class Grammar:
 	def __init__(self, filename, init='E'):
-		self.terminals 		= set()
-		self.nonterminals	= set()
+		self.terminals 		= []
+		self.nonterminals	= []
 		self.productions	= []
 
 		self.firsts		= dict()
@@ -47,7 +48,7 @@ class Grammar:
 			if(left in self.nonterminals):
 				self.buildProduction(left, tokens[2:])
 			else:
-				self.nonterminals.add(left)
+				self.nonterminals.append(left)
 
 				if(left in self.terminals):
 					self.terminals.remove(left)
@@ -66,7 +67,8 @@ class Grammar:
 				right.append(pr)
 
 				if(pr not in self.nonterminals):
-					self.terminals.add(pr)
+					if(pr not in self.terminals):
+						self.terminals.append(pr)
 
 		self.productions.append(Production(left, right))
 
@@ -99,58 +101,39 @@ class Grammar:
 			first_tmp.clear()
 
 	def runFollow(self, non):
-		if(len(self.follows[non]) == 0):
-			if(non == self.init):
-				self.follows[non].add(self.dolar)
-
-			for left in self.nonterminals:
-				productions = self.getProduction(left)
-				for production in productions:
-					for i, token in enumerate(production):
-						if(token == non):
-							if(i < len(production) - 1):
-								if(production[i+1] in self.terminals):
-									self.follows[non].add(production[i+1])
-								else:
-									for first in self.firsts[production[i+1]]:
-										self.follows[non].add(first)
-							else:
-								if(non != left):
-									self.runFollow(left)
-
-									for follow in self.follows[left]:
-										self.follows[non].add(follow)
+		for left in self.nonterminals:
+			productions = self.getProduction(left)
+			for production in productions:
+				for i, token in enumerate(production):
+					if(token == non):
+						if(i < (len(production) - 1)):
+							tmp = production[i+1]
+							if(tmp in self.terminals):
+								self.follows[non].add(production[i+1])
+							elif(tmp in self.nonterminals):
+								for f in self.firsts[tmp]:
+									if(f != 'lambda'):
+										self.follows[non].add(f)
+								self.follows[non] |= self.follows[left]
+						else:
+							if token in self.nonterminals:
+								self.follows[non] |= self.follows[left]
 
 	def runFollows(self):
 		for nonterminal in self.nonterminals:
-			self.follows[nonterminal] = set()
-			
+			self.follows[nonterminal] = set()		
+		self.follows[self.init].add(self.dolar)
+		
 		for nonterminal in self.nonterminals:
 			self.runFollow(nonterminal)
 
-	""" def runFollows(self):
-		for nonterminal in self.nonterminals:
-			self.follows[nonterminal] = set()
-
-		self.follows[self.init].add(self.dolar)
-			
-		for nonterminal in self.nonterminals:			
-			productions = self.getProduction(nonterminal)
-			for production in productions:
-
-				aux = self.follows[nonterminal]
-				for token in production:
-					if token in self.follows:
-						self.follows[token].union(aux)
-						aux = self.firsts[token] """
-
 	def print(self):
 		print('Terminals    : {}'.format(self.terminals))
-		print('Non Terminals: {}\n'.format(self.nonterminals))
+		print('Non Terminals: {}'.format(self.nonterminals))
 
-		print('Productions:')
+		print('\nProductions:')
 		for pr in self.productions:
-			print(pr)		
+			print(pr)
 
 		print('\n{:8}{:^15}{:^15}'.format('Token', 'Firsts', 'Follows'))
 		print('-'*38)
