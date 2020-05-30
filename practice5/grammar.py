@@ -128,6 +128,22 @@ class Grammar:
 		for nonterminal in self.nonterminals:
 			self.runFollow(nonterminal)
 
+	""" def runFollows(self):
+		for nonterminal in self.nonterminals:
+			self.follows[nonterminal] = set()
+
+		self.follows[self.init].add(self.dolar)
+			
+		for nonterminal in self.nonterminals:			
+			productions = self.getProduction(nonterminal)
+			for production in productions:
+
+				aux = self.follows[nonterminal]
+				for token in production:
+					if token in self.follows:
+						self.follows[token].union(aux)
+						aux = self.firsts[token] """
+
 	def print(self):
 		print('Terminals    : {}'.format(self.terminals))
 		print('Non Terminals: {}\n'.format(self.nonterminals))
@@ -146,7 +162,7 @@ class Grammar:
 			))
 
 if __name__ == "__main__":
-	gramm = Grammar(filename='test.txt', init='E')
+	gramm = Grammar(filename='grammar.txt', init='E')
 	gramm.runFirsts()
 	gramm.runFollows()
 
