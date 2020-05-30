@@ -1,4 +1,5 @@
 def toString(ls):
+
 	tmp = ''
 	for i in ls:
 		tmp = tmp + i + ' '
@@ -6,7 +7,6 @@ def toString(ls):
 	return tmp
 
 first_tmp	= []
-nonterm = []
 
 class Production:
 	def __init__(self, left, right):
@@ -84,6 +84,18 @@ class Grammar:
 
 		return tmp
 
+	def findProduction(self, nonterm, term):
+		productions = self.getProduction(nonterm)
+
+		if(len(productions) == 1):
+			return productions[0]
+
+		for production in productions:
+			if(term in production):
+				return production
+
+		return None
+
 	def runFirst(self, left):
 		production = self.getProduction(left)
 
@@ -120,6 +132,8 @@ class Grammar:
 								self.follows[non] |= self.follows[left]
 
 	def runFollows(self):
+		self.terminals.append(self.dolar)
+		
 		for nonterminal in self.nonterminals:
 			self.follows[nonterminal] = set()		
 		self.follows[self.init].add(self.dolar)

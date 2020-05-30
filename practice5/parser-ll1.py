@@ -1,4 +1,4 @@
-from grammar import Grammar
+from grammar import Grammar, toString
 import readline
 
 class ParserLL1:
@@ -7,28 +7,20 @@ class ParserLL1:
 		self.table = dict()
 
 	def fillTable(self):
-		''' self.table = {}
+		self.table = {}
 
-		for left in self.grammar.nonterminals:
-			productions = gramm.getProduction(left)
-			for production in productions:
-				for token in production:
-					#print(token)
-					if(token != 'lambda'):
-						for el in self.grammar.firsts[token]:
-							self.table[left, el] = token
-					else:
-						for el in self.grammar.follows[left]:
-							self.table[left, el] = token
-				print()
+		for nonterminal in self.grammar.nonterminals:
+			tmp = {}
+			for terminal in self.grammar.firsts[nonterminal]:
+				if(terminal != 'lambda'):
+					pr = self.grammar.findProduction(nonterminal, terminal)
+					if(pr is not None):
+						tmp[terminal] = pr
+				else:
+					for terminal2 in self.grammar.follows[nonterminal]:
+						tmp[terminal2] = ['lambda']
 
-		print(self.table) '''
-
-		self.table['E'] = {'(': ['T', 'Ep'], 'num': ['T', 'Ep'], 'id': ['T', 'Ep']}
-		self.table['Ep'] = {'+': ['+', 'T', 'Ep'], '-': ['-', 'T', 'Ep'], ')': ['lambda'], '$': ['lambda']}
-		self.table['T'] = {'(': ['F', 'Tp'], 'num': ['F', 'Tp'], 'id': ['F', 'Tp']}
-		self.table['Tp'] = {'+': ['lambda'], '-': ['lambda'], '*': ['*', 'F', 'Tp'], '/': ['/', 'F', 'Tp'], ')': ['lambda'], '$': ['lambda']}
-		self.table['F'] = {'(': ['(', 'E', ')'], 'num': ['num'], 'id': ['id']}
+			self.table[nonterminal] = tmp
 
 	def getQueue(self, sentence):
 		q = []
@@ -41,6 +33,29 @@ class ParserLL1:
 				return None
 		
 		return q
+
+	def print(self):
+		print('Parsing Table LL1')
+
+		print(' '*5, end='')
+		for col in self.grammar.terminals:
+			if(col != 'lambda'):
+				print('{:8}'.format(col), end='')
+		print('\n', '-'*(len(self.grammar.terminals)*8))
+
+		for row in self.grammar.nonterminals:
+			print('{:4}|'.format(row), end='')
+			for col in self.grammar.terminals:
+				if(col != 'lambda'):
+					if(col in self.table[row]):
+						print('{:8}'.format(toString(self.table[row][col])), end='')
+					else:
+						print(' '*8, end='')
+			print()
+
+		""" for row in self.table:
+			print(row)
+			print('  {}'.format(self.table[row])) """
 
 	def recognizeSentence(self, sentence):
 		q = self.getQueue(sentence)
@@ -79,12 +94,13 @@ if __name__ == '__main__':
 
 	parser = ParserLL1(gramm)
 	parser.fillTable()
+	parser.print()
 
-	while(True):
+	""" while(True):
 		line = input('sentence: ')
 
 		if(line == 'q'):
 			break    
 			
 		r = parser.recognizeSentence(line)
-		print('  ', r)
+		print('  ', r) """
