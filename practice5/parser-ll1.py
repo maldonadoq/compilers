@@ -53,10 +53,6 @@ class ParserLL1:
 						print(' '*8, end='')
 			print()
 
-		""" for row in self.table:
-			print(row)
-			print('  {}'.format(self.table[row])) """
-
 	def recognizeSentence(self, sentence):
 		q = self.getQueue(sentence)
 
@@ -96,11 +92,11 @@ if __name__ == '__main__':
 	parser.fillTable()
 	parser.print()
 
-	""" while(True):
+	while(True):
 		line = input('sentence: ')
 
 		if(line == 'q'):
 			break    
 			
 		r = parser.recognizeSentence(line)
-		print('  ', r) """
+		print('  ', r)
