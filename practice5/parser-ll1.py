@@ -41,7 +41,7 @@ class ParserLL1:
 		for col in self.grammar.terminals:
 			if(col != 'lambda'):
 				print('{:8}'.format(col), end='')
-		print('\n', '-'*(len(self.grammar.terminals)*8))
+		print('\n', '-'*((len(self.grammar.terminals)*8)-5))
 
 		for row in self.grammar.nonterminals:
 			print('{:4}|'.format(row), end='')
@@ -52,6 +52,8 @@ class ParserLL1:
 					else:
 						print(' '*8, end='')
 			print()
+
+		print()
 
 	def recognizeSentence(self, sentence):
 		q = self.getQueue(sentence)
