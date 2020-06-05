@@ -1,0 +1,20 @@
+expr		-> var identifier = expr
+			-> comp-expr ((and|or) comp-expr)*
+
+comp-expr	-> not comp-expr
+			-> arith-expr ((==|<|>|<=|>=) arith-expr)*
+
+arith-expr	-> term ((+|-) term)*
+
+term		-> factor ((*|/) factor)*
+
+factor		-> (+|-) factor
+			-> power
+
+power		-> atom (^ factor)*
+
+atom 		-> int|float|identifier
+			-> ( expr )
+			-> if-expr
+
+if-expr		-> if expr then expr (elif expr then expr)* (else expr)?
