@@ -2,16 +2,11 @@ from grammar import Grammar
 import readline
 
 class Node:
-	label = ""
-	children = list()
-	father = None
-	brother = None
-
-	def __init__(self):
+	def __init__(self, label, father=None, brother=None):
 		self.label = label
-		self.children = []
+		self.children = list()
 		self.father = father
-		self.brother = 
+		self.brother = brother
 
 class ParserTree:
 	def __init__(self, grammar):
@@ -21,6 +16,8 @@ class ParserTree:
 
 		self.table = dict()
 		self.fillTable()
+
+		self.root = None
 
 	def fillTable(self):
 		self.table = {}
@@ -50,14 +47,39 @@ class ParserTree:
 		
 		return q
 
-	def op1(self):
-		pass
+	def op1(self, node, childrens):
+		if(node):
+			for ch in childrens:
+				node.children.append(Node(ch, node))
 
-	def op2(self):
-		pass
+			size = len(node.children)
+			for i in range(size):
+				if(i < size - 1):
+					node.children[i].brother = node.children[i+1]
 
-	def op3(self):
-		pass
+			return node.children[0]
+
+		else:
+			return None
+
+	def op2(self, node):
+		if(node):
+			if(node.brother):
+				return node.brother
+			else:
+				if(node.father):
+					return self.op2(node.father)
+				else:
+					return None
+		else:
+			return None
+
+	def op3(self, node):		
+		if(node):
+			node.children.append(Node('lambda', node))
+			return self.op2(node)
+		else:
+			return None
 
 	def recognizeSentence(self, sentence):
 		q = self.getQueue(sentence)
@@ -71,22 +93,26 @@ class ParserTree:
 		s.append(self.grammar.dolar)
 		s.append(self.grammar.init)
 
+		self.root = Node(self.grammar.init)
+
 		while(len(q) != 0 and len(s) != 0):
 			if(q[0] == s[-1]):
 				q.pop(0)
 				s.pop()
 
-				print('op 2')
+				self.root = self.op2(self.root)
 			else:
 				tmp = s.pop()
 
 				if(tmp in self.table and q[0] in self.table[tmp]):
-					for tok in self.table[tmp][q[0]][::-1]:
-						if(tok != 'lambda'):
-							s.append(tok)
-							print('op 1')
+					symb = self.table[tmp][q[0]]
+
+					if(symb == ['lambda']):
+						self.root = self.op3(self.root)
 					else:
-						print('op 3')
+						for tok in symb[::-1]:
+							s.append(tok)
+						self.root = self.op1(self.root, symb)
 
 		if(len(q) == 0 and len(s) == 0):
 			return 'Sentence Accepted!'
@@ -95,17 +121,14 @@ class ParserTree:
 
 
 if __name__ == '__main__':
-	gramm = Grammar(filename='grammar2.txt', init='E')
+	gramm = Grammar(filename='grammar1.txt', init='E')
 	parser = ParserTree(gramm)
 
-	r = parser.recognizeSentence('id + id')
-	print(r)
-
-	""" while(True):
+	while(True):
 		line = input('sentence: ')
 
 		if(line == 'q'):
 			break    
 			
 		r = parser.recognizeSentence(line)
-		print('  ', r) """
+		print('  ', r)
