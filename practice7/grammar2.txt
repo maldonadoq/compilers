@@ -1,0 +1,5 @@
+E := T Ep
+Ep := + T Ep | lambda
+T := F Tp
+Tp := * F Tp | lambda
+F := ( E ) | id

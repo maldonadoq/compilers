@@ -1,3 +1,5 @@
+first_tmp	= []
+
 class Production:
 	def __init__(self, left, right):
 		self.left = left
