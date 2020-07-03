@@ -113,6 +113,8 @@ class ParserTree:
 						for tok in symb[::-1]:
 							s.append(tok)
 						self.root = self.op1(self.root, symb)
+				else:
+					break
 
 		if(len(q) == 0 and len(s) == 0):
 			return 'Sentence Accepted!'
