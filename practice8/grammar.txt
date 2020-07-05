@@ -1,0 +1,5 @@
+expr	: term ((+ | -) term) *
+term	: factor ((MUL|DIV) factor)*
+factor	: num
+		: (+ | -) factor
+		: lpar expr rpar
