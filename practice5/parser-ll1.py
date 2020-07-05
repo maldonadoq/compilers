@@ -78,7 +78,9 @@ class ParserLL1:
 					for tok in self.table[tmp][q[0]][::-1]:
 						if(tok != 'lambda'):
 							s.append(tok)
-
+				else:
+					break
+		
 		if(len(q) == 0 and len(s) == 0):
 			return 'Sentence Accepted!'
 		
